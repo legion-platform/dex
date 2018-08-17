@@ -253,7 +253,7 @@ type idTokenClaims struct {
 	Email         string `json:"email,omitempty"`
 	EmailVerified *bool  `json:"email_verified,omitempty"`
 
-	Groups []string `json:"groups,omitempty"`
+	Groups []string `json:"groups"`
 
 	Name string `json:"name,omitempty"`
 
@@ -311,8 +311,9 @@ func (s *Server) newIDToken(clientID string, claims storage.Claims, scopes []str
 		}
 		tok.AccessTokenHash = atHash
 	}
-
+	scopes = append(scopes, "groups")
 	for _, scope := range scopes {
+		
 		switch {
 		case scope == scopeEmail:
 			tok.Email = claims.Email
