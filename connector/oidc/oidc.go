@@ -97,7 +97,7 @@ func (c *Config) Open(id string, logger logrus.FieldLogger) (conn connector.Conn
 	if len(c.Scopes) > 0 {
 		scopes = append(scopes, c.Scopes...)
 	} else {
-		scopes = append(scopes, "profile", "email")
+		scopes = append(scopes, "profile", "email", "groups")
 	}
 
 	clientID := c.ClientID
@@ -190,6 +190,7 @@ func (c *oidcConnector) HandleCallback(s connector.Scopes, r *http.Request) (ide
 		Email         string `json:"email"`
 		EmailVerified bool   `json:"email_verified"`
 		HostedDomain  string `json:"hd"`
+		Groups        []string `json:"groups"`
 	}
 	if err := idToken.Claims(&claims); err != nil {
 		return identity, fmt.Errorf("oidc: failed to decode claims: %v", err)
@@ -214,6 +215,7 @@ func (c *oidcConnector) HandleCallback(s connector.Scopes, r *http.Request) (ide
 		Username:      claims.Username,
 		Email:         claims.Email,
 		EmailVerified: claims.EmailVerified,
+		Groups:        claims.Groups,
 	}
 	return identity, nil
 }
